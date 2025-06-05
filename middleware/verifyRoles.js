@@ -1,4 +1,4 @@
-const permitRoles = (...allowed) => {
+export const permitRoles = (...allowed) => {
     return (req, res, next) => {
         if(!allowed.includes(req.user.roles)){
             return res.status(403).json({message: "Insufficient rights: forbidden!"})
@@ -7,4 +7,3 @@ const permitRoles = (...allowed) => {
     }
 }
 
-export default permitRoles

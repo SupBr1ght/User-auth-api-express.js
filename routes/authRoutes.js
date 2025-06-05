@@ -1,7 +1,6 @@
 import express from "express";
-import { register, login, updateUserById, deleteUserById } from '../controllers/authController.js';
-import protect from '../middleware/AuthMiddleware.js';
-import permitRoles from "../middleware/RolesVerify.js";
+import { register, login, updateUserById, deleteUserById } from '../controllers/auth/authController.js';
+import {protect, permitRoles} from "../middleware/index.js"
 
 
 const router = express.Router();

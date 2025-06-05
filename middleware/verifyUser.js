@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith("Bearer ")) {
     return res.status(401).json({ message: "No token provided" });
@@ -15,5 +15,3 @@ const protect = async (req, res, next) => {
     res.status(401).json({ message: "Token verification failed" });
   }
 };
-
-export default protect;

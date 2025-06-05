@@ -3,7 +3,7 @@ import dotenv from "dotenv"
 import connectDB from "./config/db.js";
 dotenv.config();
 connectDB();
-import authRoutes from "./routes/AuthRoutes.js"
+import authRoutes from "./routes/authRoutes.js"
 
 
 
