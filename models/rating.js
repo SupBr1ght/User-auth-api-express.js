@@ -12,7 +12,7 @@ const ratingSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  target: {
+  targetId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     refPath: 'targetModel', 
@@ -23,4 +23,4 @@ const ratingSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Rating', ratingSchema);
+export const Rating = mongoose.model('Rating', ratingSchema);
