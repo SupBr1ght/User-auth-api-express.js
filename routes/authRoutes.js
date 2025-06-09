@@ -1,5 +1,6 @@
 import express from "express";
 import { register, login, updateUserById, deleteUserById } from '../controllers/auth/authController.js';
+import { setRating } from "../controllers/ratingController.js";
 import {protect, permitRoles} from "../middleware/index.js"
 
 
@@ -15,5 +16,7 @@ router.get('/me', protect, (req, res) => {
 // Protected routes
 router.put('/users/:id', protect, permitRoles('admin', 'moderator'), updateUserById);
 router.delete('/users/:id', protect, permitRoles('admin', 'moderator'), deleteUserById);
+//  Only registered users can vote
+router.post('/users/vote', protect, setRating)
 
 export default router;

@@ -9,7 +9,7 @@ export const setRating = async (req, res) => {
             return res.status(400).json({ error: 'Invalid target model' });
         }
 
-        if (![-1, 1].includes(value)) {
+        if (![-1, 0, 1].includes(value)) {
             return res.status(400).json({ error: 'Rating value must be -1 or 1' });
         }
 
@@ -25,9 +25,19 @@ export const setRating = async (req, res) => {
         });
         // If user updated once we update rating
         if (existing) {
-            existing.value = value;
-            await existing.save();
-            return res.json({ message: 'Rating updated', rating: existing });
+            if (value === 0) {
+                // 1. remove vote
+                await existing.deleteOne();
+                return res.json({ message: 'Vote withdrawn' });
+            } else {
+                // 2. change vote
+                existing.value = value;
+                await existing.save();
+                return res.json({ message: 'Vote updated', rating: existing });
+            }
+        }
+        if (value === 0) {
+            return res.status(400).json({ error: 'No existing vote to withdraw' });
         }
         // create new rating If we don't have that one
         const newRating = await Rating.create({
@@ -38,7 +48,7 @@ export const setRating = async (req, res) => {
         });
 
         res.status(201).json({ message: 'Rating created', rating: newRating });
-        
+
     } catch (err) {
         console.error('Rating error:', err);
         res.status(500).json({ error: 'Server error' });
