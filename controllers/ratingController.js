@@ -1,6 +1,4 @@
 import { Rating } from '../models/Rating.js';
-import { User } from '../models/User.js';
-
 
 export const setRating = async (req, res) => {
     try {
@@ -11,8 +9,8 @@ export const setRating = async (req, res) => {
             return res.status(400).json({ error: 'Invalid target model' });
         }
 
-        if (![-1, 1, 0].includes(value)) {
-            return res.status(400).json({ error: 'Rating value must be -1, 0 or 1' });
+        if (![-1, 1].includes(value)) {
+            return res.status(400).json({ error: 'Rating value must be -1 or 1' });
         }
 
         if (targetModel === 'User' && userId.toString() === targetId) {
@@ -25,14 +23,25 @@ export const setRating = async (req, res) => {
             target: targetId,
             targetModel
         });
-
+        // If user updated once we update rating
         if (existing) {
             existing.value = value;
             await existing.save();
             return res.json({ message: 'Rating updated', rating: existing });
         }
+        // create new rating If we don't have that one
+        const newRating = await Rating.create({
+            user: userId,
+            target: targetId,
+            targetModel,
+            value
+        });
 
-
-
+        res.status(201).json({ message: 'Rating created', rating: newRating });
+        
+    } catch (err) {
+        console.error('Rating error:', err);
+        res.status(500).json({ error: 'Server error' });
     }
+
 }
