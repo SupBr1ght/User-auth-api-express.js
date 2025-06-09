@@ -25,11 +25,19 @@ export const setRating = async (req, res) => {
         });
         // If user updated once we update rating
         if (existing) {
-            if (value === 0) {
+            // check if pass one hour if not deny user to take new attempt to vote
+            const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+        if (existing.updatedAt > oneHourAgo) {
+                const minutesLeft = Math.ceil((existing.updatedAt.getTime() + 60 * 60 * 1000 - now.getTime()) / 60000);
+                return res.status(429).json({
+                    error: `You can rate this target again in ${minutesLeft} minutes`
+                });
+            }
+        if (value === 0) {
                 // 1. remove vote
                 await existing.deleteOne();
                 return res.json({ message: 'Vote withdrawn' });
-            } else {
+        } else {
                 // 2. change vote
                 existing.value = value;
                 await existing.save();
