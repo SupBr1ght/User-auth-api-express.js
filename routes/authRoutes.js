@@ -24,7 +24,7 @@ router.get('/me/rating', protect, async (req, res) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: 'Користувача не знайдено.' });
+      return res.status(404).json({ message: 'User is undefined.' });
     }
     res.status(200).json({ rating: user.rating });
 
