@@ -7,7 +7,7 @@ const ratingSchema = new mongoose.Schema({
     min: -1,
     max: 1, 
   },
-  user: {
+  voter: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
@@ -22,5 +22,7 @@ const ratingSchema = new mongoose.Schema({
     required: true,
   },
 }, { timestamps: true });
+
+ratingSchema.index({ voter: 1, targetId: 1, targetModel: 1 }, { unique: true });
 
 export const Rating = mongoose.model('Rating', ratingSchema);

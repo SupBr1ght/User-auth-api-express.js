@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "moderator", "admin"],
     default: "user"
   },
+  rating: {type: Number, default: 0}
 });
 
 userSchema.pre("save", async function (next) {
@@ -21,6 +22,8 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.comparePassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
+
+
 
 export const User = mongoose.model("User", userSchema);
 
