@@ -28,23 +28,15 @@ export const setRating = async (req, res) => {
         const existing = await Rating.findOne({ voter: voterId, targetId: parsedTargetId, targetModel });
 
         if (existing) {
-            // cooldown user
-            // const cooldownError = canUpdateRatingUser(existing, now);
-            // if (cooldownError) {
-            //     return res.status(cooldownError.status).json({ error: cooldownError.error });
-            // }
-
-            const initialTargetEntity = await User.findById(parsedTargetId); // Отримайте початковий рейтинг
-            if (initialTargetEntity) {
-                console.log('Initial rating of target entity:', initialTargetEntity.rating);
-            } else {
-                console.log('Target entity not found before operation!');
+            //cooldown user
+            const cooldownError = canUpdateRatingUser(existing, now);
+            if (cooldownError) {
+                return res.status(cooldownError.status).json({ error: cooldownError.error });
             }
 
+
+
             if (value === 0) {
-                // current value - old value
-                ratingChange = value;
-                console.log('Rating change for new vote:', ratingChange); // Тут має бути 1
                 ratingChange = -existing.value;
 
                 // remove old value
@@ -55,8 +47,6 @@ export const setRating = async (req, res) => {
 
                 // get new target value for answer
                 const updatedTargetEntity = await User.findById(parsedTargetId);
-                console.log('Updated rating of target entity:', updatedTargetEntity.rating); // Тут має бути 1
-                console.log('--- КІНЕЦЬ ЗАПИТУ ---');
                 return res.json({ message: 'You\'ve succsessfuly withdraw voice', rating: updatedTargetEntity.rating });
             } else {
                 // check if existing value = new one
